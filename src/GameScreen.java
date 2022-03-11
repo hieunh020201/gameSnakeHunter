@@ -1,16 +1,21 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 import static java.lang.Thread.sleep;
 
 public class GameScreen extends JPanel implements Runnable{
 
-    int [][] bg = new int[20][20];
+    static int [][] bg = new int[20][20];
 
     ConRan ran;
     Thread thread;
     public GameScreen(){
         ran = new ConRan();
+        Data.loadImage();
+
+        bg[10][10] = 2;
 
         thread = new Thread(this);
         thread.start();
@@ -26,20 +31,27 @@ public class GameScreen extends JPanel implements Runnable{
     }
 
     public void paintBg(Graphics g){
+        g.setColor(Color.gray);
         for(int i=0;i<20;i++)
-            for(int j=0;j<20;j++){
-                if(bg[i][j]==0)
-                    g.setColor(Color.gray);
-                if(bg[i][j]==1)
+            for(int j=0;j<20;j++) {
+                g.fillRect(i * 20, j * 20, 18, 18);
+                if (bg[i][j] == 2)
+                {
                     g.setColor(Color.red);
-                if(bg[i][j]==2)
-                    g.setColor(Color.yellow);
-                g.fillRect(i*20, j*20, 20, 20);
+                    g.fillRect(i*20, j*20, 18, 18);
+                    g.setColor(Color.gray);
+                }
             }
     }
 
     public void paint(Graphics g){
         paintBg(g);
         ran.veRan(g);
+
+        Image image = null;
+        try{
+            image = ImageIO.read(new File("res/snake_head.png"));
+        }catch (Exception e) {
+        }
     }
 }
